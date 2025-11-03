@@ -15,8 +15,8 @@ async function mountCacheService(req, res, next) {
     let deepfake_analysis_result = "N/A";
     let deepfake_analysis_result_confidence = 0;
     if (req.body.image_url) {
-      const imageAnalysisAPIping = "http://127.0.0.1:8000/";
-      const imageAnalysisAPI = "http://127.0.0.1:8000/analyze/url";
+      const imageAnalysisAPIping = "https://googlegenaiexchange-imageprocessingengine-132180526643.us-central1.run.app/";
+      const imageAnalysisAPI = "https://googlegenaiexchange-imageprocessingengine-132180526643.us-central1.run.app/analyze/url";
 
       try {
         const imageResponse = await fetch(imageAnalysisAPIping, {
