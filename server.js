@@ -44,6 +44,7 @@ app.use(
         "http://localhost:3001",
         "http://localhost:5173",
         "https://google-gen-ai-exchange-demo-app.vercel.app/",
+        "https://google-gen-ai-exchange-demo-app.vercel.app",
       ];
 
       if (allowedOrigins.indexOf(origin) !== -1) {
