@@ -17,6 +17,8 @@ async function mountCacheService(req, res, next) {
     if (req.body.image_url) {
       const imageAnalysisAPIping = "https://googlegenaiexchange-imageprocessingengine1-132180526643.us-central1.run.app/";
       const imageAnalysisAPI = "https://googlegenaiexchange-imageprocessingengine1-132180526643.us-central1.run.app/analyze";
+      const formData = new URLSearchParams();
+      formData.append('image_url', req.body.image_url);
 
       try {
         const imageResponse = await fetch(imageAnalysisAPIping, {
@@ -27,9 +29,9 @@ async function mountCacheService(req, res, next) {
           const analysisResponse = await fetch(imageAnalysisAPI, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify({ image_url: req.body.image_url })
+            body: formData.toString()
           });
 
           if (analysisResponse && analysisResponse.ok) {
