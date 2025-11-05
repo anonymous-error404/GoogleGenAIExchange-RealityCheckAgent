@@ -51,7 +51,7 @@ async function mountCacheService(req, res, next) {
     }
 
     // 1 LLM call → get context
-    const context_json = await llmService.getContext(req.body.content, image_extracted_text, deepfake_analysis_result, deepfake_analysis_result_confidence);
+    const context_json = await llmService.getContext(req.body.content, req.body.image_url, image_extracted_text, deepfake_analysis_result, deepfake_analysis_result_confidence);
     console.log("Post Context :", context_json.context);
     const embeddings = await embeddingsService.get_embeddings(context_json.context);
     if (embeddings.error) {
