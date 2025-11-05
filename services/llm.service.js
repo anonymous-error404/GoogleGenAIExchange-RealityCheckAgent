@@ -3,8 +3,9 @@ import context_extraction_model from "../config/context_llm.config.js";
 
 class LLMService {
 
-    async getContext(text, tweet_image_content, deepfake_analysis_result) {
+    async getContext(text, image_url, tweet_image_content, deepfake_analysis_result) {
         const prompt = `You are a neutral text interpretation engine. Your role is to explain the *literal meaning* and *intent* of the given content as if describing it directly — not narrating where it came from.
+                        You are expected to describe the images prvided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any).
                         
                         You must:
                         1. Explain the meaning or implication of the combined content directly.
@@ -24,6 +25,7 @@ class LLMService {
                         Now analyze the following input:
 
                         Tweet Text (if any): ${text}
+                        Tweet Image Url (if any): ${image_url}
                         Text Extracted from Tweet Image (if any): ${tweet_image_content}
                         Tweet Image DeepFake Analysis Result (if any): ${deepfake_analysis_result}
                         `;
