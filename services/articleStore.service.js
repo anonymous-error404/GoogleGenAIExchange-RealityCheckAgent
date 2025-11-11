@@ -37,9 +37,9 @@ class articleStoreService {
 
   }
 
-  async getArticlesByIds(article_ids) {
+  async getArticlesByIds(results) {
 
-    if (!article_ids || article_ids.length === 0) return [];
+    if (!results || results.length === 0) return [];
 
     // Extract IDs and preserve order
     const articleIds = results.map(r => r.article_id);
