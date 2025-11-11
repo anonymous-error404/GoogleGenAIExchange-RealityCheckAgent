@@ -63,8 +63,6 @@ class articleStoreService {
       }))
       .filter(a => a); // remove nulls if any missing
 
-    console.log("Ordered Articles:", orderedArticles);
-
     return orderedArticles;
   }
 }
