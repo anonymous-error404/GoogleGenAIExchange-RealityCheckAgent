@@ -9,7 +9,7 @@ class VectorStoreService {
 
     vectorStoreClient = configuration.database_client;
 
-    async retrieveSimilarArticles(queryEmbeddings, filtered_articles, topN=10) {
+    async retrieveSimilarArticles(queryEmbeddings, filtered_articles, topN=100) {
         try {
             // Convert JS arrays into PostgreSQL array literals
             const queryEmbeddingLiteral = queryEmbeddings
