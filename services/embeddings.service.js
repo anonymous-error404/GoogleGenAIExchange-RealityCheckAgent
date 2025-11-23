@@ -32,8 +32,6 @@ class EmbeddingsService {
         embeddings = [embeddings];
       }
 
-      console.log("Embeddings:", embeddings);
-
       return embeddings;
 
     } catch (err) {

@@ -15,8 +15,10 @@ async function mountCacheService(req, res, next) {
     let deepfake_analysis_result = "N/A";
     let deepfake_analysis_result_confidence = 0;
     if (req.body.image_url) {
-      const imageAnalysisAPIping = "http://127.0.0.1:8000/";
-      const imageAnalysisAPI = "http://127.0.0.1:8000/analyze/url";
+      const imageAnalysisAPIping = "https://googlegenaiexchange-imageprocessingengine1-132180526643.us-central1.run.app/";
+      const imageAnalysisAPI = "https://googlegenaiexchange-imageprocessingengine1-132180526643.us-central1.run.app/analyze";
+      const formData = new URLSearchParams();
+      formData.append('image_url', req.body.image_url);
 
       try {
         const imageResponse = await fetch(imageAnalysisAPIping, {
@@ -27,9 +29,9 @@ async function mountCacheService(req, res, next) {
           const analysisResponse = await fetch(imageAnalysisAPI, {
             method: 'POST',
             headers: {
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify({ image_url: req.body.image_url })
+            body: formData.toString()
           });
 
           if (analysisResponse && analysisResponse.ok) {
@@ -49,7 +51,7 @@ async function mountCacheService(req, res, next) {
     }
 
     // 1 LLM call → get context
-    const context_json = await llmService.getContext(req.body.content, image_extracted_text, deepfake_analysis_result, deepfake_analysis_result_confidence);
+    const context_json = await llmService.getContext(req.body.content, req.body.image_url, image_extracted_text, deepfake_analysis_result, deepfake_analysis_result_confidence);
     console.log("Post Context :", context_json.context);
     const embeddings = await embeddingsService.get_embeddings(context_json.context);
     if (embeddings.error) {

@@ -3,11 +3,10 @@ import context_extraction_model from "../config/context_llm.config.js";
 
 class LLMService {
 
-    async getContext(text, tweet_image_content, deepfake_analysis_result) {
+    async getContext(text, image_url, tweet_image_content, deepfake_analysis_result) {
         const prompt = `You are a neutral text interpretation engine. Your role is to explain the *literal meaning* and *intent* of the given content as if describing it directly — not narrating where it came from.
-                        Do NOT say phrases like "the tweet says", "the image shows", or "the analysis result indicates". 
-                        Instead, write the explanation as a direct interpretation (e.g., say "Easy deepfake tutorial teaches how to make fake videos", not "The image says 'Easy deepfake tutorial'").
-
+                        You are expected to describe the images prvided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any).
+                        
                         You must:
                         1. Explain the meaning or implication of the combined content directly.
                         2. Detect the most prominent language used in the content.
@@ -26,6 +25,7 @@ class LLMService {
                         Now analyze the following input:
 
                         Tweet Text (if any): ${text}
+                        Tweet Image Url (if any): ${image_url}
                         Text Extracted from Tweet Image (if any): ${tweet_image_content}
                         Tweet Image DeepFake Analysis Result (if any): ${deepfake_analysis_result}
                         `;
@@ -65,7 +65,8 @@ class LLMService {
                   3.  **Check for Misinformation Tropes:** Look for signs like emotional language, calls to outrage, lack of sources, or use of buzzwords.
                   4.  **Synthesize Findings:** Based on your analysis, generate a JSON object with your assessment. Provide references to your response from the reference content(if any).
                   5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Feel free to mention news headlines, reference links, etc.
-                  6. **If completely unrelated references are provided, then completely ignore them and do not mention anything about it in your response.
+                  6. **If the context provides information about some images in the post (like deepfake analysis report, extracted text), do mention it in your response.
+                  7. **If completely unrelated references are provided, then completely ignore them and do not mention anything about it in your response.
 
                   **Output Format:**
                   Respond ONLY with a valid JSON object following this schema.

@@ -37,9 +37,9 @@ class articleStoreService {
 
   }
 
-  async getArticlesByIds(article_ids) {
+  async getArticlesByIds(results) {
 
-    if (!article_ids || article_ids.length === 0) return [];
+    if (!results || results.length === 0) return [];
 
     // Extract IDs and preserve order
     const articleIds = results.map(r => r.article_id);
@@ -62,8 +62,6 @@ class articleStoreService {
         avg_distance: r.avg_distance // include similarity score
       }))
       .filter(a => a); // remove nulls if any missing
-
-    console.log("Ordered Articles:", orderedArticles);
 
     return orderedArticles;
   }

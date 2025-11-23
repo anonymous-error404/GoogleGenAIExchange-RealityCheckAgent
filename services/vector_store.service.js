@@ -16,11 +16,10 @@ class VectorStoreService {
                 .map(vec => `'[${vec.join(", ")}]'::vector`)
                 .join(", ");
 
-            console.log(filtered_articles);
-            const filteredArticlesLiteral = filtered_articles.join(", ");
-
-            console.log("Query Embeddings Literal:", queryEmbeddingLiteral);
-            console.log("Filtered Articles Literal:", filteredArticlesLiteral);
+            const filteredArticlesLiteral = filtered_articles
+                .map(a => Number(a.article_id))
+                .filter(id => !isNaN(id))
+                .join(", ");
 
             const sql = `
                         SELECT * FROM find_similar_articles_multi(
