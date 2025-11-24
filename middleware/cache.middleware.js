@@ -15,8 +15,8 @@ async function mountCacheService(req, res, next) {
     let deepfake_analysis_result = "N/A";
     let deepfake_analysis_result_confidence = 0;
     if (req.body.image_url) {
-      const imageAnalysisAPIping = "https://googlegenaiexchange-imageprocessingengine1-132180526643.us-central1.run.app/";
-      const imageAnalysisAPI = "https://googlegenaiexchange-imageprocessingengine1-132180526643.us-central1.run.app/analyze";
+      const imageAnalysisAPIping = "https://googlegenaiexchange-imageprocessingengine-132180526643.us-central1.run.app/";
+      const imageAnalysisAPI = "https://googlegenaiexchange-imageprocessingengine-132180526643.us-central1.run.app/analyze";
       const formData = new URLSearchParams();
       formData.append('image_url', req.body.image_url);
 
