@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import CacheService from "../services/cache.service.js";
 import LLMService from "../services/llm.service.js";
-import keyBertExtractor from "../services/keyBert.service.js";
+import keyBertExtractor from "../services/keyWord.service.js";
 import vectorStoreService from "../services/vector_store.service.js";
 import articleStoreService from "../services/articleStore.service.js";
 
