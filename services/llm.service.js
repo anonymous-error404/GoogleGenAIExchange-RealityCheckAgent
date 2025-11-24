@@ -49,7 +49,7 @@ class LLMService {
 
     async verifyContext(tweet_context, language, references) {
 
-        const prompt = `You are a meticulous fact-checking expert from a neutral, non-partisan organization. Your goal is to analyze the provided tweet context and assess its likelihood of being real information versus misinformation, based on publicly available knowledge.
+        const prompt = `You are an expert, non-partisan fact-checker. Your role is to evaluate the accuracy of the given tweet using verifiable knowledge and any relevant reference content. You should speak confidently and objectively, as someone who independently knows or has verified the facts—do not phrase statements as if someone provided you information.
 
                   **Input :**
                   * **Tweet Context:** "${tweet_context}"
@@ -64,7 +64,7 @@ class LLMService {
                   2.  **Evaluate the Source:** Assess the author's bio and typical content, if relevant.
                   3.  **Check for Misinformation Tropes:** Look for signs like emotional language, calls to outrage, lack of sources, or use of buzzwords.
                   4.  **Synthesize Findings:** Based on your analysis, generate a JSON object with your assessment. Provide references to your response from the reference content(if any).
-                  5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Feel free to mention news headlines, reference links, etc.
+                  5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Add news headlines, reference links, etc. inside your response under they key "sources".
                   6. **If the context provides information about some images in the post (like deepfake analysis report, extracted text), do mention it in your response.
                   7. **If completely unrelated references are provided, then completely ignore them and do not mention anything about it in your response.
 
@@ -76,6 +76,7 @@ class LLMService {
                     "confidence": "float", // A value between 0.0 (low confidence) and 1.0 (high confidence) in your verdict.
                     "reason": "string", // A concise, evidence-based explanation for your verdict. Mention the specific claims checked and what you found.
                     "awareness_factor": "string" // Explain the common misinformation techniques or psychological triggers this tweet uses or could use (e.g., "Appeals to fear," "Creates an 'us vs. them' narrative," "Uses a kernel of truth to sell a larger falsehood," "Lack of verifiable sources").
+                    "sources": "array of json objects with each object having keys the following keys: 'headline','publication', 'link'" // news headlines, publications, urls of articles or documentation that were provided in references or from your own knowledge base
                   }`;
 
         try {
