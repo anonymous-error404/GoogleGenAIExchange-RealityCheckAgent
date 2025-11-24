@@ -9,33 +9,27 @@ class articleStoreService {
           {
             model: ArticleKeyword,
             where: {
-              [Op.or]: keywords.map(k => ({
-                keyword: {
-                  [Op.iLike]: `%${k}%`, // case-insensitive LIKE
-                },
-              })),
+              keyword: {
+                [Op.or]: keywords.map(k => ({
+                  [Op.iLike]: `%${k}%`,
+                })),
+              },
             },
-            attributes: ["keyword"],
-          },
-          {
-            model: ArticleImage,
-            attributes: ["image_url"],
-            required: false,
-          },
+            attributes: [], // No need to return keyword rows
+          }
         ],
+        attributes: ["article_id"], // Only return the data you need
         distinct: true,
       });
 
-      return articles.map(article => ({
-        article_id: article.article_id,
-      }));
+      return articles.map(a => ({ article_id: a.article_id }));
 
     } catch (error) {
       console.error("Error fetching articles by keywords:", error);
       throw error;
     }
-
   }
+
 
   async getArticlesByIds(results) {
 
