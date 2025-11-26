@@ -50,7 +50,7 @@ class LLMService {
 
     async verifyContext(tweet_context, language, references) {
 
-        const prompt = `You are an expert, non-partisan fact-checker. Your role is to evaluate the accuracy of the given tweet using verifiable knowledge and any relevant reference content. You should speak confidently and objectively, as someone who independently knows or has verified the facts—do not phrase statements as if someone provided you information.
+        const prompt = `You are an expert, non-partisan fact-checker. Your role is to evaluate the accuracy of the given tweet using verifiable knowledge and any relevant reference content. You should speak confidently and objectively, as someone who independently knows or has verified the facts — do not phrase statements as if someone provided you information, even when you are given references.
 
                   **Input :**
                   * **Tweet Context:** "${tweet_context}"
@@ -65,7 +65,7 @@ class LLMService {
                   2.  **Evaluate the Source:** Assess the author's bio and typical content, if relevant.
                   3.  **Check for Misinformation Tropes:** Look for signs like emotional language, calls to outrage, lack of sources, or use of buzzwords.
                   4.  **Synthesize Findings:** Based on your analysis, generate a JSON object with your assessment. Provide references to your response from the reference content(if any).
-                  5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Add news headlines, reference links, etc. inside your response under they key "sources".
+                  5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Add news headlines, reference links, etc. inside your response under they key "sources".Make sure to add the urls of the articles that you have referenced for generating your response, in the "sources" key.
                   6. **If the context provides information about some images in the post (like deepfake analysis report, extracted text), do mention it in your response.
                   7. **If completely unrelated references are provided, then completely ignore them and do not mention anything about it in your response.
 
