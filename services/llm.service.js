@@ -6,7 +6,7 @@ class LLMService {
     async getContext(text, image_url, tweet_image_content, deepfake_analysis_result) {
         console.log(`tweet image content : ${tweet_image_content}`);
         const prompt = `You are a neutral text interpretation engine. Your role is to only explain the *literal meaning* and *intent* of the given content as if describing it directly — not narrating where it came fromor providing any verdict on its authenticity.
-                        You are expected to describe the images prvided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any).
+                        You are expected to describe the images prvided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any). If the image is fake, then rather than vaguely saying it as fake, you must classify the image as edited or AI-generated or fabricated, etc categories of fakeness by analyzing the image.
                         
                         You must:
                         1. Explain the meaning or implication of the combined content directly.
@@ -68,6 +68,7 @@ class LLMService {
                   5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Add news headlines, reference links, etc. inside your response under they key "sources".Make sure to add the urls of the articles that you have referenced for generating your response, in the "sources" key.
                   6. **If the context provides information about some images in the post (like deepfake analysis report, extracted text), do mention it in your response.
                   7. **If completely unrelated references are provided, then completely ignore them and do not mention anything about it in your response.
+                  8. **In the reason part of your response, provide these separate texts - 1. explain about image (if any) being real or fake. 2. explain about the text extracted from image(if any) being real or fake. 3.explain about the text content of the post being real or fake**
 
                   **Output Format:**
                   Respond ONLY with a valid JSON object following this schema.
