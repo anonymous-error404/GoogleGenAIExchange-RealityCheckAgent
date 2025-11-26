@@ -11,7 +11,7 @@ class articleStoreService {
             where: {
               keyword: {
                 [Op.or]: keywords.map(k => ({
-                  [Op.iLike]: `%${k}%`,
+                  [Op.eq]: k,
                 })),
               },
             },
