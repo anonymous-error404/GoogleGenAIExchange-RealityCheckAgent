@@ -34,7 +34,6 @@ class VectorStoreService {
                         `;
 
             const [results] = await sequelizeClient.query(sql);
-            console.log("Retrieved similar articles from vector store:", results);
 
             const reference_articles = await articleStoreService.getArticlesByIds(results)
             return reference_articles;
