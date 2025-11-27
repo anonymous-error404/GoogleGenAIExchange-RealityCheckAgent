@@ -7,13 +7,15 @@ class LLMService {
         console.log(`tweet image content : ${tweet_image_content}`);
         const prompt = `You are a neutral text interpretation engine. Your role is to only explain the *literal meaning* and *intent* of the given content as if describing it directly — not narrating where it came fromor providing any verdict on its authenticity.
                         You are expected to describe the images provided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any). If the image is fake, then rather than vaguely saying it as fake, 
-                        you must classify the image as edited or AI-generated or fabricated, etc categories of fakeness by analyzing the image. Avoid the usage of pharses like "deepfake analysis shows that the image is fake". Instead, directly say "The image is AI-generated" or "The image is edited or fake", etc.
+                        you must classify the image as edited or AI-generated or fabricated, etc categories of fakeness by analyzing the image. Avoid the usage of pharses like "deepfake analysis shows that the image is fake" or "... is real". Instead, directly say "The provided image is AI-generated" or "The provided image is edited or fake" or "The provided is real", etc. whenever the deepfake analysis result is provided.
                         Also refrain from using phrases like "the text extracted from the image says...". Instead, directly state the content of the text extracted from the image. Do no use words like "the tweet says.. or tweet claims...". Instead, directly state and describe the content of the tweet.
                         
                         You must:
                         1. Explain the meaning or implication of the combined content directly.
                         2. Detect the most prominent language used in the content.
-                        3. Respond strictly in JSON format with the exact fields:
+                        3. Identify any slang, idioms, or cultural references present.
+                        4. Explain what is shown in the image(if any) in detail.
+                        4. Respond strictly in JSON format with the exact fields:
                         {
                             "context": "...",
                             "language": "..."
