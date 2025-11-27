@@ -9,29 +9,30 @@ class VectorStoreService {
 
     vectorStoreClient = configuration.database_client;
 
-    async retrieveSimilarArticles(queryEmbeddings, filtered_articles, topN=50) {
+    async retrieveSimilarArticles(queryEmbeddings, topN=50) {  //add filtered_articles parameter when using keyword based filtering
         try {
             // Convert JS arrays into PostgreSQL array literals
             const queryEmbeddingLiteral = queryEmbeddings
                 .map(vec => `'[${vec.join(", ")}]'::vector`)
                 .join(", ");
 
-            const filteredArticlesLiteral = filtered_articles
-                .map(a => Number(a.article_id))
-                .filter(id => !isNaN(id))
-                .join(", ");
+            // const filteredArticlesLiteral = filtered_articles
+            //     .map(a => Number(a.article_id))
+            //     .filter(id => !isNaN(id))
+            //     .join(", ");
 
             const sql = `
-                        SELECT * FROM find_similar_articles_topk(
+                        SELECT * FROM find_similar_articles_topk_fromall(
                             ${queryEmbeddings.length > 0 
                             ? `ARRAY[${queryEmbeddingLiteral}]::vector[]` 
                             : `ARRAY[]::vector[]`},
-                            ${filtered_articles.length > 0 
-                            ? `ARRAY[${filteredArticlesLiteral}]::bigint[]` 
-                            : `ARRAY[]::bigint[]`},
                             ${topN}
                         );
                         `;
+
+                        // ${filtered_articles.length > 0                          give this parameter for find_similar_articles_topk()
+                        //     ? `ARRAY[${filteredArticlesLiteral}]::bigint[]` 
+                        //     : `ARRAY[]::bigint[]`},
 
             const [results] = await sequelizeClient.query(sql);
 

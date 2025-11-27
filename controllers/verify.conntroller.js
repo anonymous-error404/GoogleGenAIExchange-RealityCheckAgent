@@ -11,11 +11,11 @@ async function verify_tweet(tweet_content, tweet_context, tweet_language, embedd
 
   try {
 
-    const keywords = await keyBertExtractor(tweet_context, 0.5);
-    console.log("Extracted keywords: ", keywords);
-    const filtered_articles = await articleStoreService.getArticlesByKeywords(keywords);
-    console.log("Filtered articles: ", filtered_articles.length);
-    const references = await vectorStoreService.retrieveSimilarArticles(embeddings, filtered_articles) || [];
+    // const keywords = await keyBertExtractor(tweet_context, 0.5);
+    // console.log("Extracted keywords: ", keywords);
+    // const filtered_articles = await articleStoreService.getArticlesByKeywords(keywords);
+    // console.log("Filtered articles: ", filtered_articles.length);
+    const references = await vectorStoreService.retrieveSimilarArticles(embeddings) || [];  //add filtered_articles parameter when using keyword based filtering
     console.log("References found: ", references);
     const response = await LLMService.verifyContext(tweet_context, tweet_language, JSON.stringify(references));
     response['context']=tweet_context;
