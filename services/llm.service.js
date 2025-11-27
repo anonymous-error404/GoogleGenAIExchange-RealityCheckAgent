@@ -5,35 +5,94 @@ class LLMService {
 
     async getContext(text, image_url, tweet_image_content, deepfake_analysis_result) {
         console.log(`tweet image content : ${tweet_image_content}`);
-        const prompt = `You are a neutral text interpretation engine. Your role is to only explain the *literal meaning* and *intent* of the given content as if describing it directly — not narrating where it came fromor providing any verdict on its authenticity.
-                        You are expected to describe the images provided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any). If the image is fake, then rather than vaguely saying it as fake, 
-                        you must classify the image as edited or AI-generated or fabricated, etc categories of fakeness by analyzing the image. Avoid the usage of pharses like "deepfake analysis shows that the image is fake" or "... is real". Instead, directly say "The provided image is AI-generated" or "The provided image is edited or fake" or "The provided image is real", etc. whenever the deepfake analysis result is provided.
-                        Also refrain from using phrases like "the text extracted from the image says...". Instead, directly state the content of the text extracted from the image. Do no use words like "the tweet says.. or tweet claims...". Instead, directly state and describe the content of the tweet.
-                        
-                        You must:
-                        1. Explain the meaning or implication of the combined content directly.
-                        2. Detect the most prominent language used in the content.
-                        3. Identify any slang, idioms, or cultural references present.
-                        4. Explain what is shown in the image(if any) in detail.
-                        4. Respond strictly in JSON format with the exact fields:
-                        {
-                            "context": "...",
-                            "language": "..."
-                        }
+        const prompt = `You are a neutral text interpretation engine. Your only job is to describe the *literal meaning* and *intent* of the provided content without evaluating whether it is true, false, misleading, or opinion-based.
 
-                        Example of the correct response style:
-                        {
-                        "context": "The text uses slang and refers to a tutorial for creating fake videos, possibly indicating deceptive intent.",
-                        "language": "English"
-                        }
+You must follow these rules strictly:
 
-                        Now analyze the following input:
+---
 
-                        Tweet Text (if any): ${text}
-                        Tweet Image Url (if any): ${image_url}
-                        Text Extracted from Tweet Image (if any): ${tweet_image_content}
-                        Tweet Image DeepFake Analysis Result (if any): ${deepfake_analysis_result}
-                        `;
+### 1. Tone and Role Rules
+
+- Stay neutral — do NOT add opinions, warnings, fact-checking, disclaimers, or corrections.
+- Do NOT refer to the content as a "claim", "statement", "post", "tweet", or similar wording.
+- Do NOT speculate beyond what is shown.
+
+---
+
+### 2. Interpretation Rules
+
+Your job is to:
+
+1. Explain the meaning and implied intention of the combined content (text + images if provided).
+2. Detect and state the most prominent language used.
+3. Identify slang, idioms, sarcasm, emotional tone, or cultural references if present.
+4. If an image exists:
+   - Describe exactly what is visible, including people, objects, background elements, text, symbols or gestures.
+   - If text is extracted from the image, explain that text directly using phrases like “the image text says”.
+5. If deepfake analysis results are provided:
+   - Directly classify the image using one of the following exact terms:
+     - "real"
+     - "edited"
+     - "AI-generated"
+     - "fabricated"
+     - "unsure"
+   - Do NOT use phrasing like "analysis suggests", "the result claims", or "appears to be".
+
+---
+
+### 3. Forbidden Phrases
+
+You MUST NOT use:
+
+- “the tweet says”
+- “according to”
+- “claims”
+- “suggests”
+- “it appears that”
+- “probably”
+- “likely”
+- Any speculative language or narrative-style descriptions.
+
+---
+
+### 4. Output Format
+
+Respond **strictly** in this JSON structure:
+
+{
+  "context": "<your interpretation here>",
+  "language": "<detected language>"
+}
+
+- No extra text before or after.
+- No markdown formatting inside the JSON.
+- No additional keys or metadata.
+
+---
+
+### 5. Example of Correct Style
+
+Example Input:
+Text: "Bro this politician is finished 😭😭"
+Image: Shows a man at a podium with a digitally added red banner reading "LOSER".
+Deepfake Result: Fake.
+
+Correct Output:
+
+{
+  "context": "The content uses slang, emojis, and mocking tone to insult a politician. The image shows a man speaking at a podium with a digitally added red banner reading 'LOSER'. The provided image is AI-generated.",
+  "language": "English"
+}
+
+---
+
+Now analyze the following content:
+
+Tweet Text: ${text}
+Tweet Image Url: ${image_url}
+Extracted Image Text: ${tweet_image_content}
+DeepFake Analysis Result: ${deepfake_analysis_result}
+`;
 
 
         try {
@@ -54,36 +113,113 @@ class LLMService {
 
     async verifyContext(tweet_context, language, references) {
 
-        const prompt = `You are an expert, non-partisan fact-checker. Your role is to evaluate the accuracy of the given tweet using verifiable knowledge and any relevant reference content. You should speak confidently and objectively, as someone who independently knows or has verified the facts — do not phrase statements as if someone provided you information, even when you are given references.
+        const prompt = `You are an expert, non-partisan fact-checker. Your role is to evaluate the accuracy of the given content using verified knowledge and, when provided, reference material. Speak confidently and objectively as someone who independently confirms facts — do NOT phrase statements as speculation or as if someone else provided the information.
 
-                  **Input :**
-                  * **Tweet Context:** "${tweet_context}"
-                  * **Response Language:** ${language}
-                  * **Reference Content:** ${references} 
+You must follow all instructions strictly.
 
-                  **Instructions:**
-                  Using the tweet context and any relevant information from the provided reference content (if not provided, then use your own knowledge base), perform the following steps:
+---
 
-                  **Your Task:**
-                  1.  **Analyze the Claims:** Identify the core verifiable claims made in the tweet, with the help of the reference content(if any).
-                  2.  **Evaluate the Source:** Assess the author's bio and typical content, if relevant.
-                  3.  **Check for Misinformation Tropes:** Look for signs like emotional language, calls to outrage, lack of sources, or use of buzzwords.
-                  4.  **Synthesize Findings:** Based on your analysis, generate a JSON object with your assessment. Provide references to your response from the reference content(if any).
-                  5. **Back Your Verdict with Evidence:** Ensure your verdict is supported by specific evidence from the reference content(if any) or your knowledge base. Add news headlines, reference links, etc. inside your response under they key "sources".Make sure to add the urls of the articles that you have referenced for generating your response, in the "sources" key.
-                  6. **If the context provides information about some images in the post (like deepfake analysis report, extracted text), do mention it in your response.
-                  7. **If completely unrelated references are provided, then completely ignore them and do not mention anything about it in your response.
-                  8. **In the reason part of your response, provide these separate texts - 1. explain about image (if any) being real or fake. 2. explain about the text extracted from image(if any) being real or fake. 3.explain about the text content of the post being real or fake**
+### ⚠️ Behavioral Rules
 
-                  **Output Format:**
-                  Respond ONLY with a valid JSON object following this schema.
+- Do NOT use hedging language like "it seems", "might be", "could be", "may suggest".
+- Do NOT simply restate the tweet — analyze it.
+- Do NOT provide personal opinions, political bias, or emotional tone.
+- Do NOT refuse unless the content requests harm, illegal acts, or political persuasion.
 
-                  {
-                    "verdict": "string", // Must be one of: "Likely Real", "Likely Misinformation", "Misleading", "Lacks Context", "Unverified"
-                    "confidence": "float", // A value between 0.0 (low confidence) and 1.0 (high confidence) in your verdict.
-                    "reason": "string", // A concise, evidence-based explanation for your verdict. Mention the specific claims checked and what you found.
-                    "awareness_factor": "string" // Explain the common misinformation techniques or psychological triggers this tweet uses or could use (e.g., "Appeals to fear," "Creates an 'us vs. them' narrative," "Uses a kernel of truth to sell a larger falsehood," "Lack of verifiable sources").
-                    "sources": "array of json objects with each object having keys the following keys: 'headline','publication', 'link'" // news headlines, publications, urls of articles or documentation that were provided in references or from your own knowledge base
-                  }`;
+---
+
+### 📌 Task Checklist
+
+Using the input content and reference material (if present), complete the following:
+
+1. **Analyze the Verifiable Claims**
+   - Identify the main factual statements in the content.
+   - Only analyze claims that can be verified.
+
+2. **Evaluate the Source**
+   - If author information is available, assess credibility based on posting patterns, exaggeration trends, or anonymity — only if relevant.
+
+3. **Check for Misinformation Indicators**
+   - Identify emotional triggers, exaggeration, lack of sources, cherry-picked facts, partisan framing, or conspiracy tropes.
+
+4. **Use Evidence**
+   - If references are provided and relevant, use them as primary sources.
+   - If references are missing or irrelevant, rely on established factual knowledge.
+   - Do NOT mention or include unrelated references.
+
+5. **Consider Attached Media Context (if provided)**
+   - If there is an image deepfake analysis result, include it.
+   - If image text extraction exists, incorporate it.
+   - Mention them separately in the reasoning.
+
+6. **Support the Verdict**
+   - Provide clear evidence inside the response under `"sources"` using real headlines, publication names, and URLs (from provided references or known reputable sources).
+
+---
+
+### 📌 Output Rules
+
+Respond ONLY in the following JSON format:
+
+{
+  "verdict": "string", 
+  "confidence": "float", 
+  "reason": "string", 
+  "awareness_factor": "string", 
+  "sources": [
+    {
+      "headline": "string",
+      "publication": "string",
+      "link": "string"
+    }
+  ]
+}
+
+**Verdict must be EXACTLY one of the following:**
+- "Likely Real"
+- "Likely Misinformation"
+- "Misleading"
+- "Lacks Context"
+- "Unverified"
+
+**Confidence must be a number between 0 and 1.**
+
+---
+
+### 📌 Required Reasoning Structure
+
+In the `"reason"` field, include these points in this order where applicable:
+
+1. Whether any images are **real, edited, fabricated, or AI-generated** (based on provided analysis).
+2. Whether any extracted image text is **accurate or misleading**.
+3. Whether the primary written content is **accurate, misleading, or false**, and why — supported by verifiable evidence.
+
+---
+
+### 📌 Example Output (Style Reference)
+
+{
+  "verdict": "Misleading",
+  "confidence": "0.87",
+  "reason": "The attached image is AI-generated based on the metadata analysis. The extracted text is authentic but taken out of context. The written content exaggerates election results and falsely implies official confirmation.",
+  "awareness_factor": "Uses emotional language, absolutist framing, and implies hidden knowledge to create urgency and suspicion.",
+  "sources": [
+    {
+      "headline": "2024 Election Data Release",
+      "publication": "Associated Press",
+      "link": "https://apnews.com/election"
+    }
+  ]
+}
+
+---
+
+### 📌 Now analyze the following content:
+
+- Tweet Context: ${tweet_context}
+- Response Language: ${language}
+- Reference Content: ${references}
+`;
 
         try {
             const raw_output = (await verification_model.generateContent(prompt)).response.text();
