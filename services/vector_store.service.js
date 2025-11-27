@@ -26,6 +26,7 @@ class VectorStoreService {
                             ${queryEmbeddings.length > 0 
                             ? `ARRAY[${queryEmbeddingLiteral}]::vector[]` 
                             : `ARRAY[]::vector[]`},
+                            3,
                             ${topN}
                         );
                         `;
