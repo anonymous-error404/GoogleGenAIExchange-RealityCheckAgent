@@ -9,7 +9,7 @@ class VectorStoreService {
 
     vectorStoreClient = configuration.database_client;
 
-    async retrieveSimilarArticles(queryEmbeddings, filtered_articles, topN=100) {
+    async retrieveSimilarArticles(queryEmbeddings, filtered_articles, topN=50) {
         try {
             // Convert JS arrays into PostgreSQL array literals
             const queryEmbeddingLiteral = queryEmbeddings
@@ -22,7 +22,7 @@ class VectorStoreService {
                 .join(", ");
 
             const sql = `
-                        SELECT * FROM find_similar_articles_multi(
+                        SELECT * FROM find_similar_articles_topk(
                             ${queryEmbeddings.length > 0 
                             ? `ARRAY[${queryEmbeddingLiteral}]::vector[]` 
                             : `ARRAY[]::vector[]`},

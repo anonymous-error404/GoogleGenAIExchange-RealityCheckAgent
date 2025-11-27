@@ -6,7 +6,9 @@ class LLMService {
     async getContext(text, image_url, tweet_image_content, deepfake_analysis_result) {
         console.log(`tweet image content : ${tweet_image_content}`);
         const prompt = `You are a neutral text interpretation engine. Your role is to only explain the *literal meaning* and *intent* of the given content as if describing it directly — not narrating where it came fromor providing any verdict on its authenticity.
-                        You are expected to describe the images prvided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any). If the image is fake, then rather than vaguely saying it as fake, you must classify the image as edited or AI-generated or fabricated, etc categories of fakeness by analyzing the image.
+                        You are expected to describe the images provided(if any) in the content, based on what is shown in the image, the text extracted(if any) from the image, and the deepfake analysis of the image(if any). If the image is fake, then rather than vaguely saying it as fake, 
+                        you must classify the image as edited or AI-generated or fabricated, etc categories of fakeness by analyzing the image. Avoid the usage of pharses like "deepfake analysis shows that the image is fake". Instead, directly say "The image is AI-generated" or "The image is edited or fake", etc.
+                        Also refrain from using phrases like "the text extracted from the image says...". Instead, directly state the content of the text extracted from the image. Do no use words like "the tweet says.. or tweet claims...". Instead, directly state and describe the content of the tweet.
                         
                         You must:
                         1. Explain the meaning or implication of the combined content directly.
