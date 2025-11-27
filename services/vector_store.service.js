@@ -28,7 +28,7 @@ class VectorStoreService {
                             : `ARRAY[]::vector[]`},
                             ${filtered_articles.length > 0     
                             ? `ARRAY[${filteredArticlesLiteral}]::bigint[]` 
-                            : `ARRAY[]::bigint[]`},,
+                            : `ARRAY[]::bigint[]`},
                             ${topN}
                         );
                         `;
