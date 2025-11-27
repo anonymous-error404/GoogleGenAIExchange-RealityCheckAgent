@@ -22,7 +22,7 @@ class VectorStoreService {
             //     .join(", ");
 
             const sql = `
-                        SELECT * FROM find_similar_articles_topk_fromall(
+                        SELECT * FROM find_similar_articles_optimized(
                             ${queryEmbeddings.length > 0 
                             ? `ARRAY[${queryEmbeddingLiteral}]::vector[]` 
                             : `ARRAY[]::vector[]`},
