@@ -62,7 +62,7 @@ async function extractKeywords(text) {
 
   console.log(keywords,tokens);
 
-  return keywords;
+  return [keywords,tokens];
 }
 
 function normalizekeywords(keywords) {

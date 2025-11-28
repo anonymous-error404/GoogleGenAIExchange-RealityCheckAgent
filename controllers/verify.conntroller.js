@@ -11,9 +11,9 @@ async function verify_tweet(tweet_content, tweet_context, tweet_language, embedd
 
   try {
 
-    const keywords = await keyBertExtractor(tweet_context, 0.5);
+    const [keywords,tokens] = await keyBertExtractor(tweet_context);
     console.log("Extracted keywords: ", keywords);
-    const filtered_articles = await articleStoreService.getArticlesByKeywords(keywords);
+    const filtered_articles = await articleStoreService.getArticlesByKeywords(keywords,tokens);
     console.log("Filtered articles: ", filtered_articles.length);
     const references = await vectorStoreService.retrieveSimilarArticles(embeddings, filtered_articles) || [];  //add filtered_articles parameter when using keyword based filtering
     console.log("References found: ", references);
