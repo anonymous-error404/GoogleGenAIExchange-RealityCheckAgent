@@ -2,26 +2,27 @@ import { Op } from "sequelize";
 import { Article, ArticleKeyword, ArticleImage } from "../db_entities/index.js";
 
 class articleStoreService {
-  async getArticlesByKeywords(keywords) {
+  async getArticlesByKeywords(keywords, tokens) {
     try {
       const articles = await Article.findAll({
-        include: [
-          {
-            model: ArticleKeyword,
-            where: {
-              keyword: {
-                [Op.or]: keywords.map(k => ({
-                  [Op.eq]: k,
-                })),
-              },
-            },
-            attributes: [], // No need to return keyword rows
-          }
-        ],
-        attributes: ["article_id"], // Only return the data you need
-        distinct: true,
-      });
+        include: [{
+          model: ArticleKeyword,
+          where: {
+            [Op.or]: [
+              // 1. Exact matches
+              { keyword: { [Op.in]: keywords } },
 
+              // 2. Whole-word partial matches
+              ...tokens.map(token => ({
+                keyword: { [Op.regexp]: `(^|\\s)${token}(\\s|$)` }
+              }))
+            ]
+          },
+          attributes: []
+        }],
+        attributes: ['article_id'],
+        distinct: true
+      });
       return articles.map(a => ({ article_id: a.article_id }));
 
     } catch (error) {
