@@ -10,11 +10,11 @@ class articleStoreService {
           where: {
             [Op.or]: [
               // 1. Exact matches
-              { keyword: { [Op.in]: keywords } },
+              { keyword: { [Op.in]: keywords.map(k => k.toLowerCase()) } },
 
               // 2. Whole-word partial matches
               ...tokens.map(token => ({
-                keyword: { [Op.regexp]: `(^|\\s)${token}(\\s|$)` }
+                keyword: { [Op.regexp]: `(?i)(^|\\s)${token}(\\s|$)` }
               }))
             ]
           },
