@@ -7,7 +7,8 @@ async function extractKeywords(text, minScore = 0.5) {
   const result = await hf_client.tokenClassification({
     model: "ml6team/keyphrase-extraction-distilbert-inspec",
     inputs: text,
-    provider: "hf-inference"
+    provider: "hf-inference",
+    parameters : { aggregation_strategy:"simple" }
   });
 
   const keywords = result
