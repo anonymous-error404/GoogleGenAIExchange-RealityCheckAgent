@@ -125,6 +125,7 @@ class LLMService {
                     - Do NOT simply restate the tweet — analyze it.
                     - Do NOT provide personal opinions, political bias, or emotional tone.
                     - Do NOT refuse unless the content requests harm, illegal acts, or political persuasion.
+                    - You have to STRICTLY provide the response in the provided json structure and response language.
 
                     ---
 
